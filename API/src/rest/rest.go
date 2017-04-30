@@ -10,22 +10,22 @@ import (
 	"tarot"
 )
 
-func GetRoundTableEndpoint(w http.ResponseWriter, req *http.Request) {
-	var cards []tarot.Card
-	cards = append(cards, tarot.Card{Color: 4, Number: 21})
-	cards = append(cards, tarot.Card{Color: 4, Number: 15})
-	json.NewEncoder(w).Encode(cards)
+var party tarot.Party
+
+func GetTableEndpoint(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode(party.Table)
 }
 
-func GetRoundScoresEndpoint(w http.ResponseWriter, req *http.Request) {
-	var scores tarot.TableScores
-	scores.Scores[0] = 6
-	scores.Scores[1] = 15
-	json.NewEncoder(w).Encode(scores)
+func GetTableCardsEndpoint(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode(party.Table.Cards)
+}
+
+func GetTableScoresEndpoint(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode(party.Table.Scores)
 }
 
 func GetPlayEndpoint(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "{yourTurn: yes}")
+	fmt.Fprintln(w, "{yourTurn: true}")
 }
 
 func PostPlayCardEndpoint(w http.ResponseWriter, req *http.Request) {
@@ -36,10 +36,12 @@ func PostPlayCardEndpoint(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	router := mux.NewRouter()
-	router.HandleFunc("/round/table", GetRoundTableEndpoint).Methods("GET")
-	router.HandleFunc("/round/scores", GetRoundScoresEndpoint).Methods("GET")
+	party = tarot.NewParty()
+	/*router := mux.NewRouter()
+	router.HandleFunc("/table", GetTableEndpoint).Methods("GET")
+	router.HandleFunc("/table/cards", GetTableCardsEndpoint).Methods("GET")
+	router.HandleFunc("/table/scores", GetTableScoresEndpoint).Methods("GET")
 	router.HandleFunc("/play", GetPlayEndpoint).Methods("GET")
 	router.HandleFunc("/play/card", PostPlayCardEndpoint).Methods("POST")
-	log.Fatal(http.ListenAndServe(":12345", router))
+	log.Fatal(http.ListenAndServe(":12345", router))*/
 }
