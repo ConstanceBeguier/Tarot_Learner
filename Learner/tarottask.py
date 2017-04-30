@@ -6,19 +6,22 @@ from random import randint
 from pybrain.rl.environments.task import Task
 
 class TarotTask(Task):
-    """ A task is associating a purpose with an environment. It decides how to evaluate
-    the observations, potentially returning reinforcement rewards or fitness values.
+    """ A task is associating a purpose with an environment.
+    It decides how to evaluate the observations, potentially returning
+    reinforcement rewards or fitness values.
     Furthermore it is a filter for what should be visible to the agent.
     Also, it can potentially act as a filter on how actions are transmitted to the environment. """
 
-    def __init__(self, environment):
+    def __init__(self, environment, verbosity=False):
         """ All tasks are coupled to an environment. """
         super(TarotTask, self).__init__(environment)
         self.action = 0
         self.env = environment
-        # we will store the last reward given, remember that "r" in the Q learning formula
-        # is the one from the last interaction, not the one given for the current interaction!
+        # we will store the last reward given, remember that "r"
+        # in the Q learning formula is the one from the last interaction,
+        # not the one given for the current interaction!
         self.lastreward = 0
+        self.verbosity = verbosity
 
     def performAction(self, action):
         """ A filtered mapping towards performAction of the underlying environment. """
@@ -31,21 +34,25 @@ class TarotTask(Task):
         return sensors
 
     def getReward(self):
-        """
-        Compute and return the current reward (i.e. corresponding to the last
-        action performed)
-        """
-        adv_hand_value = randint(self.indim, self.outdim) - 1
-        new_hand_value = self.env.hand_value
-        if self.action == 1:
-            new_hand_value += randint(2, 21)
+        """ Compute and return the current reward
+        (i.e. corresponding to the last action performed) """
+        cur_hand_value = self.env.hand_value
 
-        if new_hand_value >= adv_hand_value and new_hand_value <= 21:
-            cur_reward = 1.0
-        else:
-            cur_reward = -1.0
+        if self.action == 1 and self.env.hand_value > 0: # Bot draw card
+            self.lastreward = 0.0
+        else: # Bot stay or Hand is zero
+            # TODO : Dealer have to draw other cards...
+            dealer_hand_value = randint(self.indim, self.outdim)
+            if self.env.hand_value >= dealer_hand_value and self.env.hand_value <= self.env.outdim:
+                self.lastreward = 10.0
+            else:
+                self.lastreward = -10.0
+            self.env.reset()
 
-        return cur_reward
+        if self.verbosity:
+            print "H: %s C: %s R: %s" % (cur_hand_value, self.action, self.lastreward)
+
+        return self.lastreward
 
     @property
     def indim(self):
