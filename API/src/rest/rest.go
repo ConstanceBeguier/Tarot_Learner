@@ -12,36 +12,65 @@ import (
 
 var party tarot.Party
 
-func GetTableEndpoint(w http.ResponseWriter, req *http.Request) {
+func GetHandEndpoint(w http.ResponseWriter, req *http.Request) {
+	// id := mux.Vars(req)['id']
+	//json.NewEncoder(w).Encode(party.Players[0].CardsRemaining)
 	json.NewEncoder(w).Encode(party.Table)
 }
 
-func GetTableCardsEndpoint(w http.ResponseWriter, req *http.Request) {
-	json.NewEncoder(w).Encode(party.Table.Cards)
+func GetNewpartyEndpoint(w http.ResponseWriter, req *http.Request) {
+	fmt.Println(party.Table)
+	json.NewEncoder(w).Encode(party.Table)
 }
 
-func GetTableScoresEndpoint(w http.ResponseWriter, req *http.Request) {
-	json.NewEncoder(w).Encode(party.Table.Scores)
+func GetNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode("GetNewpartyAvailableseatEndpoint")
 }
 
-func GetPlayEndpoint(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "{yourTurn: true}")
+func PostNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode("PostNewpartyAvailableseatEndpoint")
 }
 
-func PostPlayCardEndpoint(w http.ResponseWriter, req *http.Request) {
-	var card tarot.Card
-	_ = json.NewDecoder(req.Body).Decode(&card)
-	fmt.Println(card)
-	json.NewEncoder(w).Encode(card)
+func GetTableEndpoint(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode("GetTableEndpoint")
 }
+
+func PostTableEndpoint(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode("PostTableEndpoint")
+}
+
+func GetTableTurnEndpoint(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode("GetTableTurnEndpoint")
+}
+
+// func GetTableCardsEndpoint(w http.ResponseWriter, req *http.Request) {
+// 	json.NewEncoder(w).Encode(party.Table.Cards)
+// }
+
+// func GetTableScoresEndpoint(w http.ResponseWriter, req *http.Request) {
+// 	json.NewEncoder(w).Encode(party.Table.Scores)
+// }
+
+// func GetPlayEndpoint(w http.ResponseWriter, req *http.Request) {
+// 	fmt.Fprintln(w, "{yourTurn: true}")
+// }
+
+// func PostPlayCardEndpoint(w http.ResponseWriter, req *http.Request) {
+// 	var card tarot.Card
+// 	_ = json.NewDecoder(req.Body).Decode(&card)
+// 	fmt.Println(card)
+// 	json.NewEncoder(w).Encode(card)
+// }
 
 func main() {
 	party = tarot.NewParty()
-	/*router := mux.NewRouter()
+	router := mux.NewRouter()
+	router.HandleFunc("/hand/{id}", GetHandEndpoint).Methods("GET")
+	router.HandleFunc("/newparty", GetNewpartyEndpoint).Methods("GET")
+	router.HandleFunc("/newparty/available_seat", GetNewpartyAvailableseatEndpoint).Methods("GET")
+	router.HandleFunc("/newparty/available_seat/{id}", PostNewpartyAvailableseatEndpoint).Methods("POST")
 	router.HandleFunc("/table", GetTableEndpoint).Methods("GET")
-	router.HandleFunc("/table/cards", GetTableCardsEndpoint).Methods("GET")
-	router.HandleFunc("/table/scores", GetTableScoresEndpoint).Methods("GET")
-	router.HandleFunc("/play", GetPlayEndpoint).Methods("GET")
-	router.HandleFunc("/play/card", PostPlayCardEndpoint).Methods("POST")
-	log.Fatal(http.ListenAndServe(":12345", router))*/
+	router.HandleFunc("/table", PostTableEndpoint).Methods("POST")
+	router.HandleFunc("/table/{turn}", GetTableTurnEndpoint).Methods("GET")
+	log.Fatal(http.ListenAndServe(":12345", router))
 }
