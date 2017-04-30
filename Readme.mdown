@@ -2,4 +2,54 @@
 
 ## Introduction
 
-Blabla
+## Front Player
+
+### Description
+
+## API
+
+### Description
+
+## Front Learner
+
+### Description
+
+### Go further with doInteraction()
+
+```
+Experiment Env (EE)
+Experiment Task (ET)
+Q Learner (QL)
+Q Agent (QA)
+```
+
+**Observations :**
+
+```
+QL --getObservation--> ET --getSensors--> EE
+QL --integrateObservation--> QA
+```
+
+**Action :**
+
+```
+QL --getAction--> QA
+QL --performAction--> ET --performAction--> EE
+```
+
+**Reward :**
+
+```
+QL --getReward()--> ET (--reset--> EE)
+QL --giveReward --> QA
+```
+
+### Add PyBrain repository
+
+```bash
+sudo pip install --upgrade pybrain
+
+# Apply fix https://github.com/pybrain/pybrain/issues/211
+# Files are present in pybrain_fix/
+```
+
