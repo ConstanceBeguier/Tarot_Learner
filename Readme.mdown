@@ -10,6 +10,16 @@
 
 ### Description
 
+### Requirements
+
+```
+apt-get install golang
+
+# export GOPATH
+
+go run rest.go
+```
+
 ## Front Learner
 
 ### Description
