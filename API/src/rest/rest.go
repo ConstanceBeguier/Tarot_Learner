@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"tarot"
@@ -13,9 +14,8 @@ import (
 var party tarot.Party
 
 func GetHandEndpoint(w http.ResponseWriter, req *http.Request) {
-	// id := mux.Vars(req)['id']
-	//json.NewEncoder(w).Encode(party.Players[0].CardsRemaining)
-	json.NewEncoder(w).Encode(party.Table)
+	id, _ := strconv.Atoi(mux.Vars(req)["id"])
+	json.NewEncoder(w).Encode(party.Players[id].CardsRemaining)
 }
 
 func GetNewpartyEndpoint(w http.ResponseWriter, req *http.Request) {
