@@ -12,7 +12,7 @@
 
 ### Requirements
 
-```
+```bash
 apt-get install golang
 
 # export GOPATH
