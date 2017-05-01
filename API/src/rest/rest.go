@@ -15,32 +15,44 @@ var party tarot.Party
 
 func GetHandEndpoint(w http.ResponseWriter, req *http.Request) {
 	id, _ := strconv.Atoi(mux.Vars(req)["id"])
-	json.NewEncoder(w).Encode(party.Players[id].CardsRemaining)
+	json.NewEncoder(w).Encode(party.Players[id].CardsToJson())
 }
 
 func GetNewpartyEndpoint(w http.ResponseWriter, req *http.Request) {
-	fmt.Println(party.Table)
-	json.NewEncoder(w).Encode(party.Table)
+	party = tarot.NewParty()
+	json.NewEncoder(w).Encode(party)
 }
 
 func GetNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
-	json.NewEncoder(w).Encode("GetNewpartyAvailableseatEndpoint")
+	json.NewEncoder(w).Encode(party)
 }
 
 func PostNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
-	json.NewEncoder(w).Encode("PostNewpartyAvailableseatEndpoint")
+	id, _ := strconv.Atoi(mux.Vars(req)["id"])
+	party.AvailableSeats[id] = false
+	json.NewEncoder(w).Encode(party)
 }
 
 func GetTableEndpoint(w http.ResponseWriter, req *http.Request) {
-	json.NewEncoder(w).Encode("GetTableEndpoint")
+	json.NewEncoder(w).Encode(party.Table)
 }
 
 func PostTableEndpoint(w http.ResponseWriter, req *http.Request) {
-	json.NewEncoder(w).Encode("PostTableEndpoint")
+	id, _ := strconv.Atoi(mux.Vars(req)["id"])
+	color, _ := strconv.Atoi(mux.Vars(req)["color"])
+	number, _ := strconv.Atoi(mux.Vars(req)["number"])
+	c := tarot.Card{Color: tarot.Color(color), Number: number}
+	party.PlayCard(c, id)
+	json.NewEncoder(w).Encode(party.Table)
 }
 
-func GetTableTurnEndpoint(w http.ResponseWriter, req *http.Request) {
-	json.NewEncoder(w).Encode("GetTableTurnEndpoint")
+//TODO
+// Ready to play the newt trick
+func GetTableTrickIdEndpoint(w http.ResponseWriter, req *http.Request) {
+	trick, _ := strconv.Atoi(mux.Vars(req)["trick"])
+	id, _ := strconv.Atoi(mux.Vars(req)["id"])
+	fmt.Println(trick, id)
+	json.NewEncoder(w).Encode("GetTableTurnIdEndpoint")
 }
 
 // func GetTableCardsEndpoint(w http.ResponseWriter, req *http.Request) {
@@ -67,10 +79,12 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/hand/{id}", GetHandEndpoint).Methods("GET")
 	router.HandleFunc("/newparty", GetNewpartyEndpoint).Methods("GET")
+	//router.HandleFunc("/newparty/status", GetNewpartyEndpoint).Methods("GET")
 	router.HandleFunc("/newparty/available_seat", GetNewpartyAvailableseatEndpoint).Methods("GET")
 	router.HandleFunc("/newparty/available_seat/{id}", PostNewpartyAvailableseatEndpoint).Methods("POST")
 	router.HandleFunc("/table", GetTableEndpoint).Methods("GET")
-	router.HandleFunc("/table", PostTableEndpoint).Methods("POST")
-	router.HandleFunc("/table/{turn}", GetTableTurnEndpoint).Methods("GET")
+	router.HandleFunc("/table/{id}/{color}/{number}", PostTableEndpoint).Methods("POST")
+	//router.HandleFunc("/table/{turn}", GetTableTurnEndpoint).Methods("GET")
+	router.HandleFunc("/table/{trick}/{id}", GetTableTrickIdEndpoint).Methods("GET")
 	log.Fatal(http.ListenAndServe(":12345", router))
 }

@@ -7,9 +7,10 @@ const NB_CARDS_PER_PLAYER = 24
 const NB_CARDS_IN8_DOG = 6
 
 type Party struct {
-	Players [NB_PLAYERS]Player
-	Dog     []Card
-	Table   Table
+	Players        [NB_PLAYERS]Player
+	Dog            []Card
+	Table          Table
+	AvailableSeats [NB_PLAYERS]bool `json:"availableSeats,omitempty"`
 }
 
 func NewParty() Party {
@@ -27,7 +28,10 @@ func NewParty() Party {
 		party.Players[i] = player
 	}
 	party.Dog = allCards[NB_CARDS_PER_PLAYER*NB_PLAYERS:]
-	party.Table = Table{}
+	party.Table = Table{IsAttacker: [NB_PLAYERS]int{1, 0, 0}}
+	for i := range party.AvailableSeats {
+		party.AvailableSeats[i] = true
+	}
 	return party
 }
 
@@ -36,7 +40,7 @@ func (p *Party) PlayCard(c Card, i int) bool {
 		panic("Bad player number")
 	}
 	// check turn and player
-	if !p.Table.checkTurn(i) {
+	if !p.Table.checkPlayerTurn(i) {
 		return false
 	}
 	if !p.Players[i].hasCard(c) {

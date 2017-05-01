@@ -1,21 +1,23 @@
 package tarot
 
 type Table struct {
-	Scores      [2]float32       `json:"tableScores,omitempty"`
-	Cards       [NB_PLAYERS]Card `json:"tableCards,omitempty"`
-	Turn        int              `json:"tableTurn,omitempty"`
+	Scores      [2]float32       `json:"scores,omitempty"`
+	Cards       [NB_PLAYERS]Card `json:"cards,omitempty"`
+	PlayerTurn  int              `json:"playerTurn,omitempty"`
 	FirstPlayer int              `json:"firstPlayer,omitempty"`
+	TrickNb     int              `json:"trickNb,omitempty"`
 	IsAttacker  [NB_PLAYERS]int  `json:"isAttacker,omitempty"`
 }
 
-func (t *Table) checkTurn(i int) bool {
-	return t.Turn == i
+func (t *Table) checkPlayerTurn(i int) bool {
+	return t.PlayerTurn == i
 }
 
 func (t *Table) playCard(c Card, i int) {
 	t.Cards[i] = c
-	t.Turn = (t.Turn + 1) % NB_PLAYERS
-	if t.Turn != t.FirstPlayer {
+	t.PlayerTurn = (t.PlayerTurn + 1) % NB_PLAYERS
+	// Check end of turn
+	if t.PlayerTurn != t.FirstPlayer {
 		return
 	}
 	t.endRound()
@@ -34,13 +36,18 @@ func (t *Table) endRound() {
 		t.Scores[t.IsAttacker[playerExcuse]] += 4.5
 	}
 	// Remove cards on table
+	nilCard := Card{Color: 0, Number: 0}
+	for i := range t.Cards {
+		t.Cards[i] = nilCard
+	}
 	// Select new first player
 	t.FirstPlayer = trickWinner
-	t.Turn = trickWinner
+	t.PlayerTurn = trickWinner
+	t.TrickNb++
 }
 
 func (t *Table) selectTrickWinner() int {
-	trickColor := t.Cards[t.Turn].Color
+	trickColor := t.Cards[t.FirstPlayer].Color
 	trickWinner := 0
 	trickBestCard := t.Cards[0]
 	for i := 1; i < NB_PLAYERS; i++ {
