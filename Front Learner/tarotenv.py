@@ -38,6 +38,7 @@ class TarotEnv(Environment):
         """
 
         # The environment can't affect the action
+        print action
         return action
 
     def reset(self):

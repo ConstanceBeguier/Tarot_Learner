@@ -12,11 +12,11 @@ from tarotenv import TarotEnv
 
 # Debug
 # from pdb import set_trace as st
-VERBOSE = False
+VERBOSE = True
 
 NB_ITERATION = 300
-MIN_VAL = 2
-MAX_VAL = 21
+NB_COL = 2
+NB_ROW = 21
 Q_ALPHA = 0.2
 Q_GAMMA = 0.2
 
@@ -29,7 +29,7 @@ def run():
     Stand=0, Hit=1 """
 
     # define action value table
-    av_table = ActionValueTable(MAX_VAL, MIN_VAL)
+    av_table = ActionValueTable(NB_ROW, NB_COL)
     av_table.initialize(0.)
 
     # define Q-learning agent
@@ -56,7 +56,7 @@ def run():
 
     print '|First State|Choice 0 (Stand)|Choice 1 (Hit)|Relative value of Standing over Hitting|'
     print '|:-------:|:-------|:-----|:-----|'
-    for i in range(MAX_VAL):
+    for i in range(NB_ROW):
         print '| %s | %s | %s | %s |' % (
             (i+1),
             av_table.getActionValues(i)[0],
