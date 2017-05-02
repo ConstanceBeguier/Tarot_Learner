@@ -9,30 +9,22 @@ from requests.exceptions import ConnectionError
 URL = 'http://localhost:12345'
 SESSION = Session()
 
-def get_newparty():
-    """ Test /newparty """
+def get_path(path):
+    """ GET path """
+    print path
     try:
-        loads(SESSION.get(URL + '/newparty').text)
+        loads(SESSION.get(path).text)
     except ConnectionError, log:
         return log
     except ValueError, log:
         return log
     return 'OK'
 
-def get_newparty_availableseat():
-    """ Test /newparty/available_seat """
+def post_path(path, payload=None):
+    """ POST path """
+    print path
     try:
-        loads(SESSION.get(URL + '/newparty/available_seat').text)
-    except ConnectionError, log:
-        return log
-    except ValueError, log:
-        return log
-    return 'OK'
-
-def post_newparty_availableseat():
-    """ Test /newparty/available_seat """
-    try:
-        loads(SESSION.post(URL + '/newparty/available_seat/0').text)
+        loads(SESSION.post(path, data=payload).text)
     except ConnectionError, log:
         return log
     except ValueError, log:
@@ -40,11 +32,16 @@ def post_newparty_availableseat():
     return 'OK'
 
 if __name__ == '__main__':
-    print "get_newparty..."
-    print get_newparty()
+    print get_path(URL + '/newparty')
 
-    print "get_newparty_availableseat"
-    print get_newparty_availableseat()
+    print get_path(URL + '/newparty/available_seat')
 
-    print "post_newparty_availableseat"
-    print post_newparty_availableseat()
+    print post_path(URL + '/newparty/available_seat/0')
+
+    print get_path(URL + '/hand')
+
+    print get_path(URL + '/table')
+
+    print post_path(URL + '/table')
+
+    print get_path(URL + '/table/1/0')

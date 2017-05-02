@@ -3,9 +3,10 @@
 """ Tarot play """
 
 # Standard library imports
-from tarot_ai import Dummy
 from json import loads
+from time import sleep
 # Related third party imports
+from tarot_ai import Dummy
 from requests import Session
 
 # from pdb import set_trace as st
@@ -16,11 +17,17 @@ SESSION = Session()
 
 def take_seat():
     """ Blabla """
-    # payload = {'st_username': self.profile['username'], 'st_passwd': self.profile['password']}
-    # req_url = SESSION.post(url, data=payload)
-    req = SESSION.get(URL + '/newparty')
-    return loads(req.text)
+    return loads(SESSION.get(URL + '/newparty').text)
 
+def player_ready():
+    """ Return other player status """
+    req_json = loads(SESSION.get(URL + '/newparty/available_seat').text)
+    return True
+
+def wait_for_players(timeout):
+    """ Wait until players are ready """
+    while not player_ready():
+        sleep(timeout)
 
 def play(player_ai):
     """ Playing Tarot """
@@ -31,6 +38,7 @@ def play(player_ai):
 
     # Step 2 :
     # Get status of other players
+    wait_for_players(1)
 
     # Step 3 :
     # Get hand informations
