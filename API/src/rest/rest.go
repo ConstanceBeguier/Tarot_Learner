@@ -35,7 +35,7 @@ func GetNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) 
 func PostNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
 	id, _ := strconv.Atoi(mux.Vars(req)["id"])
 	party.Seats.AvailableSeats[id] = false
-	json.NewEncoder(w).Encode(party)
+	json.NewEncoder(w).Encode(party.Seats)
 }
 
 func GetTableEndpoint(w http.ResponseWriter, req *http.Request) {
