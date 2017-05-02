@@ -34,14 +34,14 @@ def post_path(path, payload=None):
 if __name__ == '__main__':
     print get_path(URL + '/newparty')
 
-    print get_path(URL + '/newparty/available_seat')
+    print get_path(URL + '/newparty/available_seats')
 
-    print post_path(URL + '/newparty/available_seat/0')
+    print post_path(URL + '/newparty/available_seats/0')
 
-    print get_path(URL + '/hand')
+    print get_path(URL + '/hand/0')
 
     print get_path(URL + '/table')
 
-    print post_path(URL + '/table')
+    print post_path(URL + '/table/0/2/10')
 
     print get_path(URL + '/table/1/0')

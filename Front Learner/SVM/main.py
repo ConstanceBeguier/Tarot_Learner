@@ -21,7 +21,7 @@ def take_seat():
 
 def player_ready():
     """ Return other player status """
-    req_json = loads(SESSION.get(URL + '/newparty/available_seat').text)
+    req_json = loads(SESSION.get(URL + '/newparty/available_seats').text)
     return True
 
 def wait_for_players(timeout):
