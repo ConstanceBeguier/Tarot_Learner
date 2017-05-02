@@ -11,6 +11,14 @@ import (
 	"tarot"
 )
 
+type NewPartyJson struct {
+	Succeed bool `json:"succeed,omitempty"`
+}
+
+type AvailableSeats struct {
+	AvailableSeats [tarot.NB_PLAYERS]bool `json:"availableSeats,omitempty"`
+}
+
 var party tarot.Party
 
 func GetHandEndpoint(w http.ResponseWriter, req *http.Request) {
@@ -20,11 +28,13 @@ func GetHandEndpoint(w http.ResponseWriter, req *http.Request) {
 
 func GetNewpartyEndpoint(w http.ResponseWriter, req *http.Request) {
 	party = tarot.NewParty()
-	json.NewEncoder(w).Encode(party)
+	newPartyJson := NewPartyJson{Succeed: true}
+	json.NewEncoder(w).Encode(newPartyJson)
 }
 
 func GetNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
-	json.NewEncoder(w).Encode(party)
+	av := AvailableSeats{AvailableSeats: [tarot.NB_PLAYERS]bool{true, false, false}}
+	json.NewEncoder(w).Encode(av)
 }
 
 func PostNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
