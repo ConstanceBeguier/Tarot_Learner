@@ -15,10 +15,6 @@ type NewPartyJson struct {
 	Succeed bool `json:"succeed,omitempty"`
 }
 
-type AvailableSeats struct {
-	AvailableSeats [tarot.NB_PLAYERS]bool `json:"availableSeats,omitempty"`
-}
-
 var party tarot.Party
 
 func GetHandEndpoint(w http.ResponseWriter, req *http.Request) {
@@ -33,13 +29,12 @@ func GetNewpartyEndpoint(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
-	av := AvailableSeats{AvailableSeats: [tarot.NB_PLAYERS]bool{true, false, false}}
-	json.NewEncoder(w).Encode(av)
+	json.NewEncoder(w).Encode(party.Seats)
 }
 
 func PostNewpartyAvailableseatEndpoint(w http.ResponseWriter, req *http.Request) {
 	id, _ := strconv.Atoi(mux.Vars(req)["id"])
-	party.AvailableSeats[id] = false
+	party.Seats.AvailableSeats[id] = false
 	json.NewEncoder(w).Encode(party)
 }
 
