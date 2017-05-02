@@ -9,6 +9,7 @@
 ## API
 
 ### Description
+https://github.com/apidoc/apidoc/tree/dev
 
 ### Requirements
 
@@ -63,4 +64,5 @@ sudo pip install --upgrade pybrain
 # Files are present in pybrain_fix/
 ```
 
-[[http://cs229.stanford.edu/proj2014/Ivan%20Leung,%20Pedro%20Milani,%20Ben-han%20Sung,%20SkatBot.pdf]]
+http://cs229.stanford.edu/proj2014/Ivan%20Leung,%20Pedro%20Milani,%20Ben-han%20Sung,%20SkatBot.pdf
+
