@@ -14,7 +14,7 @@ type Party struct {
 }
 
 type Seats struct {
-	AvailableSeats [NB_PLAYERS]bool `json:"availableSeats,omitempty"`
+	AvailableSeats [NB_PLAYERS]bool `json:"availableSeats"`
 }
 
 func NewParty() Party {

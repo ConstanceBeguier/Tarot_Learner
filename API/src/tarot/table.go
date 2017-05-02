@@ -1,12 +1,12 @@
 package tarot
 
 type Table struct {
-	Scores      [2]float32       `json:"scores,omitempty"`
-	Cards       [NB_PLAYERS]Card `json:"cards,omitempty"`
-	PlayerTurn  int              `json:"playerTurn,omitempty"`
-	FirstPlayer int              `json:"firstPlayer,omitempty"`
-	TrickNb     int              `json:"trickNb,omitempty"`
-	IsAttacker  [NB_PLAYERS]int  `json:"isAttacker,omitempty"`
+	Scores      [2]float32       `json:"scores"`
+	Cards       [NB_PLAYERS]Card `json:"cards"`
+	PlayerTurn  int              `json:"playerTurn"`
+	FirstPlayer int              `json:"firstPlayer"`
+	TrickNb     int              `json:"trickNb"`
+	IsAttacker  [NB_PLAYERS]int  `json:"isAttacker"`
 }
 
 func (t *Table) checkPlayerTurn(i int) bool {

@@ -6,8 +6,8 @@ import (
 )
 
 type Card struct {
-	Color  Color `json:"color,omitempty"`
-	Number int   `json:"number,omitempty"`
+	Color  Color `json:"color"`
+	Number int   `json:"number"`
 }
 
 type Color int
