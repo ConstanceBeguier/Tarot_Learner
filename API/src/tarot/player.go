@@ -5,11 +5,11 @@ import (
 )
 
 type Player struct {
-	CardsRemaining map[Card]bool `json:"cards,omitempty"`
+	CardsRemaining map[Card]bool
 }
 
 type PlayerJson struct {
-	CardsRemaining []Card `json:"cards,omitempty"`
+	CardsRemaining []Card `json:"cards"`
 }
 
 func (p *Player) hasCard(c Card) bool {
