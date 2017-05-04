@@ -10,7 +10,7 @@ from time import sleep
 from tarot_ai import Dummy
 from requests import Session
 
-from pdb import set_trace as st
+# from pdb import set_trace as st
 
 URL = 'http://localhost:12345'
 DUMMY = Dummy()
@@ -19,18 +19,20 @@ SESSION = Session()
 class Tarot(object):
     """ Playing Tarot """
 
-    def __init__(self, player_ai):
+    def __init__(self, player_ai, seat_id):
         """ init"""
-        self.seat_id = 0
         self.player_ai = player_ai
+        self.seat_id = int(seat_id)
+        self.trick_id = 0
 
     def take_seat(self):
         """ Start a new game """
         # Start a new game
-        if not loads(SESSION.get(URL + '/newparty').text)['succeed']:
-            print 'Impossible to start a new game !'
-            exit(1)
-        self.seat_id = 0
+        if self.seat_id == 0:
+            print 'Start new game.'
+            if not loads(SESSION.get(URL + '/newparty').text)['succeed']:
+                print 'Impossible to start a new game !'
+                exit(1)
         # Try to seat at the table
         if loads(SESSION.post(URL + '/newparty/available_seats/' + \
             str(self.seat_id)).text)['availableSeats'][0]:
@@ -39,37 +41,51 @@ class Tarot(object):
 
     def wait_for_players(self, timeout):
         """ Wait until players are ready """
-        while not loads(SESSION.get(URL + '/newparty/available_seats').text)['availableSeats'] \
-        == [True, True, True]:
-            print 'Not ready...'
+        while not loads(SESSION.get(URL + '/newparty/status').text)['ready']:
+            print 'Not ready to start...'
             sleep(timeout)
 
-    def play(self, lead):
+    def wait_to_play(self, timeout):
+        """ Wait until it's player turn """
+        while int(loads(SESSION.get(URL + '/table/trick').text)['playerTurn']) != self.seat_id:
+            print 'Not ready to play...'
+            sleep(timeout)
+
+    def play_card(self):
+        """ Play a card using the AI """
+        hand = loads(SESSION.get(URL + '/hand/' + str(self.seat_id)).text)['cards']
+        chosen_card = self.player_ai.choose_card(hand)
+        print 'Player %s, Card %s' % (self.seat_id, chosen_card)
+        while not loads(SESSION.post(URL + '/table/' + str(self.seat_id) + '/' \
+            + str(chosen_card['color']) + '/' + str(chosen_card['number'])).text)['succeed']:
+            print 'Impossible to play a card.'
+
+    def play(self):
         """ Playing Tarot
         lead [Boolean] : Does the player init the game
         """
 
         # Step 1 :
         # Take a seat
-        if lead:
-            self.take_seat()
+        self.take_seat()
 
         # Step 2 :
         # Get status of other players
-        self.wait_for_players(1)
+        self.wait_for_players(.01)
 
-        # Step 3 :
-        # Get hand informations
+        while self.trick_id < 23:
+            print 'Start trick #%s' % self.trick_id
+            # Step 3 :
+            # Get status of the table
+            self.wait_to_play(.01)
 
-        # Step 4 :
-        # Get status of the table
+            # Step 4 :
+            # Play a card
+            self.play_card()
 
-        # Step 5 :
-        # Play a card
-        print self.player_ai.choose_card([0, 1])
-
-        # Step 6 :
-        # Ready for another turn
+            # Step 5 :
+            # Ready for another turn
+            self.trick_id += 1
 
 if __name__ == '__main__':
-    Tarot(DUMMY).play(lead=argv[0])
+    Tarot(DUMMY, argv[1]).play()
