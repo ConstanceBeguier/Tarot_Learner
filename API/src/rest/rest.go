@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -97,11 +96,9 @@ func PostNewpartyAvailableseatsEndpoint(w http.ResponseWriter, req *http.Request
 }
 
 /**
- * @api {get} /table/:id Request Hand information.
+ * @api {get} /table Request Hand information.
  * @apiName GetTableEndpoint
  * @apiGroup Table
- *
- * @apiParam {Number} id Users unique ID.
  *
  * @apiSuccess {[2]float32} scores Actual score of attacker/defender.
  * @apiSuccess {[NB_PLAYERS]Card} cards on the table.
@@ -159,9 +156,9 @@ func GetTablePlayerTurnEndpoint(w http.ResponseWriter, req *http.Request) {
  * @apiSuccess {Empty} Empty Empty brace.
  */
 func GetTableTrickIdEndpoint(w http.ResponseWriter, req *http.Request) {
-	trick, _ := strconv.Atoi(mux.Vars(req)["trick"])
-	id, _ := strconv.Atoi(mux.Vars(req)["id"])
-	fmt.Println(trick, id)
+	// trick, _ := strconv.Atoi(mux.Vars(req)["trick"])
+	// id, _ := strconv.Atoi(mux.Vars(req)["id"])
+	// fmt.Println(trick, id)
 	json.NewEncoder(w).Encode("{}")
 }
 

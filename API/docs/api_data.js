@@ -142,23 +142,10 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/table/:id",
+    "url": "/table",
     "title": "Request Hand information.",
     "name": "GetTableEndpoint",
     "group": "Table",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Users unique ID.</p>"
-          }
-        ]
-      }
-    },
     "success": {
       "fields": {
         "Success 200": [
