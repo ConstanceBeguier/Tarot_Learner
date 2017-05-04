@@ -44,4 +44,6 @@ if __name__ == '__main__':
 
     print post_path(URL + '/table/0/2/10')
 
+    print get_path(URL + '/table/trick')
+
     print get_path(URL + '/table/1/0')
