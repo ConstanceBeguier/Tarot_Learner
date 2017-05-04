@@ -4,6 +4,7 @@
 
 # Standard library imports
 from json import loads
+from sys import argv
 from time import sleep
 # Related third party imports
 from tarot_ai import Dummy
@@ -15,21 +16,6 @@ URL = 'http://localhost:12345'
 DUMMY = Dummy()
 SESSION = Session()
 
-def take_seat():
-    """ Blabla """
-    return loads(SESSION.get(URL + '/newparty').text)
-
-def player_ready(self):
-    """ Return other player status """
-    req_json = loads(SESSION.get(URL + '/newparty/available_seats').text)
-    st()
-    return True
-
-def wait_for_players(self, timeout):
-    """ Wait until players are ready """
-    while not player_ready(self):
-        sleep(timeout)
-
 class Tarot(object):
     """ Playing Tarot """
 
@@ -38,16 +24,39 @@ class Tarot(object):
         self.seat_id = 0
         self.player_ai = player_ai
 
-    def play(self):
-        """ Playing Tarot """
+    def take_seat(self):
+        """ Start a new game """
+        # Start a new game
+        if not loads(SESSION.get(URL + '/newparty').text)['succeed']:
+            print 'Impossible to start a new game !'
+            exit(1)
+        self.seat_id = 0
+        # Try to seat at the table
+        if loads(SESSION.post(URL + '/newparty/available_seats/' + \
+            str(self.seat_id)).text)['availableSeats'][0]:
+            print 'Impossible to seat at the table !'
+            exit(1)
+
+    def wait_for_players(self, timeout):
+        """ Wait until players are ready """
+        while not loads(SESSION.get(URL + '/newparty/available_seats').text)['availableSeats'] \
+        == [True, True, True]:
+            print 'Not ready...'
+            sleep(timeout)
+
+    def play(self, lead):
+        """ Playing Tarot
+        lead [Boolean] : Does the player init the game
+        """
 
         # Step 1 :
         # Take a seat
-        print take_seat()
+        if lead:
+            self.take_seat()
 
         # Step 2 :
         # Get status of other players
-        wait_for_players(self, 1)
+        self.wait_for_players(1)
 
         # Step 3 :
         # Get hand informations
@@ -63,4 +72,4 @@ class Tarot(object):
         # Ready for another turn
 
 if __name__ == '__main__':
-    Tarot(DUMMY).play()
+    Tarot(DUMMY).play(lead=argv[0])
