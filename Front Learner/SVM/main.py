@@ -28,37 +28,38 @@ class Tarot(object):
     def __init__(self, player_ai, seat_id):
         """ init"""
         self.player_ai = player_ai
-        self.seat_id = int(seat_id)
+        self.seat_id = seat_id
         self.trick_id = 0
 
     def take_seat(self):
         """ Start a new game """
         # Start a new game
-        if self.seat_id == 0:
+        if int(self.seat_id) == 0:
             print 'Start new game.'
             if not loads(SESSION.get(URL + '/newparty').text)['succeed']:
                 print 'Impossible to start a new game !'
                 exit(1)
         # Try to seat at the table
         if loads(SESSION.post(URL + '/newparty/available_seats/' + \
-            str(self.seat_id)).text)['availableSeats'][0]:
+            self.seat_id).text)['availableSeats'][0]:
             print 'Impossible to seat at the table !'
             exit(1)
 
     def wait_to_play(self, timeout=1):
         """ Wait until it's player turn """
-        while int(loads(SESSION.get(URL + '/table/trick').text)['playerTurn']) != self.seat_id:
+        while loads(SESSION.get(URL + '/table/trick').text)['playerTurn'] != int(self.seat_id):
             print 'Not ready to play...'
             sleep(timeout)
 
     def play_card(self):
         """ Play a card using the AI """
         metadata = {}
-        metadata['cards'] = loads(SESSION.get(URL + '/hand/' + str(self.seat_id)).text)['cards']
+        metadata['cards'] = loads(SESSION.get(URL + '/table/valid_cards/' + \
+            self.seat_id).text)['valid_cards']
         metadata['seat_id'] = self.seat_id
         metadata['table'] = loads(SESSION.get(URL + '/table').text)
         chosen_card = self.player_ai.choose_card(metadata)
-        while not loads(SESSION.post(URL + '/table/' + str(self.seat_id) + '/' \
+        while not loads(SESSION.post(URL + '/table/' + self.seat_id + '/' \
             + str(chosen_card['color']) + '/' + str(chosen_card['number'])).text)['succeed']:
             print 'Impossible to play a card.'
             chosen_card = self.player_ai.choose_card(metadata)

@@ -130,7 +130,7 @@ class Features(object):
         """
         Return 1 if the player is taking
         """
-        return self.metadata['table']['isTaker'][self.metadata['seat_id']]
+        return self.metadata['table']['isTaker'][int(self.metadata['seat_id'])]
 
     def diff_score(self):
         """
