@@ -6,7 +6,7 @@ type Table struct {
 	PlayerTurn  int              `json:"playerTurn"`
 	FirstPlayer int              `json:"firstPlayer"`
 	TrickNb     int              `json:"trickNb"`
-	IsAttacker  [NB_PLAYERS]int  `json:"isAttacker"`
+	IsTaker     [NB_PLAYERS]int  `json:"isTaker"`
 }
 
 func (t *Table) checkPlayerTurn(i int) bool {
@@ -30,10 +30,10 @@ func (t *Table) endRound() {
 	trickWinner = t.selectTrickWinner()
 	// Update scores
 	trickScore = t.trickScore()
-	t.Scores[t.IsAttacker[trickWinner]] += trickScore
+	t.Scores[t.IsTaker[trickWinner]] += trickScore
 	excusePlayed, playerExcuse := t.excusePlayer()
 	if excusePlayed {
-		t.Scores[t.IsAttacker[playerExcuse]] += 4.5
+		t.Scores[t.IsTaker[playerExcuse]] += 4.5
 	}
 	// Remove cards on table
 	nilCard := Card{Color: 0, Number: 0}

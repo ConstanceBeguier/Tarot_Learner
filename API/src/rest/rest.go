@@ -106,12 +106,12 @@ func PostNewpartyAvailableseatsEndpoint(w http.ResponseWriter, req *http.Request
  * @apiName GetTableEndpoint
  * @apiGroup Table
  *
- * @apiSuccess {[2]float32} scores Actual score of attacker/defender.
+ * @apiSuccess {[2]float32} scores Actual score of defender/taker.
  * @apiSuccess {[NB_PLAYERS]Card} cards on the table.
  * @apiSuccess {Integer} playerTurn ID of the player turn.
  * @apiSuccess {Integer} firstPlayer ID of the first player who played.
  * @apiSuccess {Integer} trickNb Trick's number.
- * @apiSuccess {[NB_PLAYERS]int} isAttacker Return the attacker status of players.
+ * @apiSuccess {[NB_PLAYERS]int} isTaker Return the taker status of players.
  */
 func GetTableEndpoint(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(party.Table)

@@ -8,7 +8,7 @@ const NB_CARDS_IN8_DOG = 6
 
 type Party struct {
 	Players [NB_PLAYERS]Player
-	Dog     []Card
+	Kitty   []Card
 	Table   Table
 	Seats   Seats
 }
@@ -32,8 +32,8 @@ func NewParty() Party {
 		}
 		party.Players[i] = player
 	}
-	party.Dog = allCards[NB_CARDS_PER_PLAYER*NB_PLAYERS:]
-	party.Table = Table{IsAttacker: [NB_PLAYERS]int{1, 0, 0}}
+	party.Kitty = allCards[NB_CARDS_PER_PLAYER*NB_PLAYERS:]
+	party.Table = Table{IsTaker: [NB_PLAYERS]int{1, 0, 0}}
 	for i := range party.Seats.AvailableSeats {
 		party.Seats.AvailableSeats[i] = true
 	}
