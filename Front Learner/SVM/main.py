@@ -32,7 +32,9 @@ class Tarot(object):
         self.trick_id = 0
 
     def take_seat(self):
-        """ Start a new game """
+        """
+        This function start a new game and try to seat on it.
+        """
         # Start a new game
         if int(self.seat_id) == 0:
             print 'Start new game.'
@@ -46,16 +48,20 @@ class Tarot(object):
             exit(1)
 
     def wait_to_play(self, timeout=1):
-        """ Wait until it's player turn """
+        """
+        This function loop while it's not the player turn.
+        """
         while loads(SESSION.get(URL + '/table/trick').text)['playerTurn'] != int(self.seat_id):
             print 'Not ready to play...'
             sleep(timeout)
 
     def play_card(self):
-        """ Play a card using the AI """
+        """
+        This function play a card choose by the AI.
+        """
         metadata = {}
         metadata['cards'] = loads(SESSION.get(URL + '/table/valid_cards/' + \
-            self.seat_id).text)['valid_cards']
+            self.seat_id).text)['validCards']
         metadata['seat_id'] = self.seat_id
         metadata['table'] = loads(SESSION.get(URL + '/table').text)
         chosen_card = self.player_ai.choose_card(metadata)
@@ -66,8 +72,8 @@ class Tarot(object):
         print 'Player %s, Card %s' % (self.seat_id, chosen_card)
 
     def play(self):
-        """ Playing Tarot
-        lead [Boolean] : Does the player init the game
+        """
+        Playing Tarot.
         """
 
         # Step 1 :
@@ -77,6 +83,8 @@ class Tarot(object):
         # Step 2 :
         # Get status of other players
         wait_for_players(timeout=.01)
+
+        print loads(SESSION.get(URL + '/hand/' + self.seat_id).text)
 
         while self.trick_id < 24:
             print 'Start trick #%s' % self.trick_id

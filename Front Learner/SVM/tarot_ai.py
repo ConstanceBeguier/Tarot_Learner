@@ -12,7 +12,7 @@ from features import Features
 class Dummy(object):
     """ Dummy AI """
     def __init__(self):
-        """ init"""
+        """ Init function"""
         self.cls = choice      # random.choice classifier
         self.feat = Features()
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" Tarot Features """
+""" Features generator for Tarot Game """
 
 # Debug
 # from pdb import set_trace as st
@@ -8,7 +8,7 @@
 class Features(object):
     """ Feature class """
     def __init__(self):
-        """ init"""
+        """ Init function"""
         self.card = None
         self.history = []
         self.metadata = None
@@ -17,7 +17,6 @@ class Features(object):
         """
         Input:
         metadata['cards'] : Cards in hand
-        metadata['history'] : History of played cards
         metadata['seat_id'] : The ID of the seat
         metadata['table'] : Cards on the table
 
@@ -31,12 +30,10 @@ class Features(object):
             win_card
             is_taker
             diff_score
-            is_master
             remaining_trumps
+            is_master
             color_played
         """
-        self.update_history()
-
         self.metadata = metadata
         features_list = []
         for card in metadata['cards']:
@@ -50,9 +47,9 @@ class Features(object):
             features.append(self.win_card())
             features.append(self.is_taker())
             features.append(self.diff_score())
+            features.append(self.remaining_trumps())
             # Not implemented yet
             features.append(self.is_master())
-            features.append(self.remaining_trumps())
             features.append(self.color_played())
             features_list.append(features)
         return features_list
@@ -140,16 +137,20 @@ class Features(object):
         adv_score = self.metadata['table']['scores'][(self.is_taker()+1)%2]
         return score - adv_score
 
-    def is_master(self):
-        """
-        Return 1 if the card is master
-        """
-        # TODO : Create function
-        return 0
-
     def remaining_trumps(self):
         """
         Return the number of remaining trumps
+        """
+        # Remove old tricks's trumps
+        old_tricks = self.metadata['table']['HistoryCards'][:self.metadata['table']['trickNb']]
+        remaining_trumps = 21 - sum([sum([y['color'] == 4 for y in x]) for x in old_tricks])
+        # Remove current trick's trumps
+        remaining_trumps -= sum([x['color'] == 4 for x in self.metadata['table']['cards']])
+        return remaining_trumps
+
+    def is_master(self):
+        """
+        Return 1 if the card is master
         """
         # TODO : Create function
         return 0
@@ -165,14 +166,8 @@ class Features(object):
     # TOOLS
     def card_same_color(self, card):
         """
-        Return the cards of the color specified
+        Return the cards with the same current card's color 
         """
         if card['color'] != self.card['color']:
             return {'color': 0, 'number': 0}
         return card
-
-    def update_history(self):
-        """
-        GET last trick history and store it
-        """
-        self.history += {}
