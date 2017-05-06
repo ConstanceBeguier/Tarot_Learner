@@ -56,10 +56,22 @@ class Features(object):
         Return the trick color.
         If no cards are on the table, this is the card color.
         """
-        if self.metadata['table']['playerTurn'] == self.metadata['table']['firstPlayer']:
+        hmhp = self.how_much_have_played()
+        firstplayer_id = self.metadata['table']['firstPlayer']
+        if hmhp == 0:
             return self.card['color']
+        elif hmhp == 1:
+            trick_color = self.metadata['table']['cards'][firstplayer_id]['color']
+            if trick_color == 5:
+                return self.card['color']
+            else:
+                return trick_color
         else:
-            return self.metadata['table']['cards'][0]['color']
+            trick_color = self.metadata['table']['cards'][firstplayer_id]['color']
+            if trick_color == 5:
+                return self.metadata['table']['cards'][firstplayer_id+1]['color']
+            else:
+                return trick_color
 
     def how_much_have_played(self):
         """

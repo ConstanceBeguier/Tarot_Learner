@@ -58,10 +58,11 @@ class Tarot(object):
         metadata['history'] = None
         metadata['table'] = loads(SESSION.get(URL + '/table').text)
         chosen_card = self.player_ai.choose_card(metadata)
-        print 'Player %s, Card %s' % (self.seat_id, chosen_card)
         while not loads(SESSION.post(URL + '/table/' + str(self.seat_id) + '/' \
             + str(chosen_card['color']) + '/' + str(chosen_card['number'])).text)['succeed']:
             print 'Impossible to play a card.'
+            chosen_card = self.player_ai.choose_card(metadata)
+        print 'Player %s, Card %s' % (self.seat_id, chosen_card)
 
     def play(self):
         """ Playing Tarot
