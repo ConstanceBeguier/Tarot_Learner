@@ -56,6 +56,7 @@ class Tarot(object):
         metadata = {}
         metadata['cards'] = loads(SESSION.get(URL + '/hand/' + str(self.seat_id)).text)['cards']
         metadata['history'] = None
+        metadata['seat_id'] = self.seat_id
         metadata['table'] = loads(SESSION.get(URL + '/table').text)
         chosen_card = self.player_ai.choose_card(metadata)
         while not loads(SESSION.post(URL + '/table/' + str(self.seat_id) + '/' \

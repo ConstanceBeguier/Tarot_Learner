@@ -17,19 +17,22 @@ class Features(object):
         Input:
         metadata['cards'] : Cards in hand
         metadata['history'] : History of played cards
+        metadata['seat_id'] : The ID of the seat
         metadata['table'] : Cards on the table
 
         Ouput:
         Return a list of features for the classifier
-            CARD (n times)
+            CARD COLOR
+            CARD NUMBER
             trick_color
             how_many_have_played
             how_many_will_play
             win_card
+            is_taker
+            diff_score
             is_master
             remaining_trumps
             color_played
-            is_winning
         """
         self.metadata = metadata
         features_list = []
@@ -42,11 +45,12 @@ class Features(object):
             features.append(self.how_many_have_played())
             features.append(self.how_many_will_play())
             features.append(self.win_card())
+            features.append(self.is_taker())
+            features.append(self.diff_score())
             # Not implemented yet
             features.append(self.is_master())
             features.append(self.remaining_trumps())
             features.append(self.color_played())
-            features.append(self.is_winning())
             features_list.append(features)
         return features_list
 
@@ -119,6 +123,21 @@ class Features(object):
         # Impossible return
         return return_statement
 
+    def is_taker(self):
+        """
+        Return 1 if the player is taking
+        """
+        # TODO : Remove 'isAttacker'
+        return self.metadata['table']['isAttacker'][self.metadata['seat_id']]
+
+    def diff_score(self):
+        """
+        Return the score differential
+        """
+        score = self.metadata['table']['scores'][self.is_taker()]
+        adv_score = self.metadata['table']['scores'][(self.is_taker()+1)%2]
+        return score - adv_score
+
     def is_master(self):
         """
         Return 1 if the card is master
@@ -137,13 +156,6 @@ class Features(object):
         """
         Return the number of card of the trick color which
         have been already played
-        """
-        # TODO : Create function
-        return 0
-
-    def is_winning(self):
-        """
-        Return 1 if the player is winning
         """
         # TODO : Create function
         return 0

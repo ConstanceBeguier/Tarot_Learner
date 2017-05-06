@@ -22,6 +22,7 @@ class Dummy(object):
         Input:
         metadata['cards'] : Cards in hand
         metadata['history'] : History of played cards
+        metadata['seat_id'] : The ID of the seat
         metadata['table'] : Cards on the table
 
         Output:
