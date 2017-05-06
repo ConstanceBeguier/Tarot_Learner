@@ -49,7 +49,6 @@ class Features(object):
             features.append(self.diff_score())
             features.append(self.color_played())
             features.append(self.remaining_trumps())
-            # Not implemented yet
             features.append(self.is_master())
             features_list.append(features)
         return features_list
@@ -162,13 +161,20 @@ class Features(object):
         """
         Return 1 if the card is master
         """
-        # TODO : Create function
-        return 0
+        color = self.card['color']
+        number = self.card['number']
+        ceil = 14
+        if color == 4:
+            ceil = 21
+        old_tricks = self.metadata['table']['HistoryCards'][:self.metadata['table']['trickNb']]
+        better_card_played = sum([sum([y['color'] == color and y['number'] > number \
+            for y in x]) for x in old_tricks])
+        return int((number + better_card_played) == ceil)
 
     # TOOLS
     def card_same_color(self, card):
         """
-        Return the cards with the same current card's color 
+        Return the cards with the same current card's color
         """
         if card['color'] != self.card['color']:
             return {'color': 0, 'number': 0}

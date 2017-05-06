@@ -84,8 +84,6 @@ class Tarot(object):
         # Get status of other players
         wait_for_players(timeout=.01)
 
-        print loads(SESSION.get(URL + '/hand/' + self.seat_id).text)
-
         while self.trick_id < 24:
             print 'Start trick #%s' % self.trick_id
             # Step 3 :
