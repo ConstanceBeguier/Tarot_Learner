@@ -27,6 +27,7 @@ func NewParty() Party {
 			cards[c] = true
 		}
 		player := Player{
+			Id:             i,
 			CardsRemaining: cards,
 		}
 		party.Players[i] = player
