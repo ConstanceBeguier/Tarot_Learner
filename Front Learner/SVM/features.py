@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """ Tarot Features """
 
-from pdb import set_trace as st
+# Debug
+# from pdb import set_trace as st
 
 class Features(object):
     """ Feature class """
@@ -22,13 +23,13 @@ class Features(object):
         Return a list of features for the classifier
             CARD (n times)
             trick_color
+            how_much_have_played
+            how_much_will_play
+            win_card
             is_master
             remaining_trumps
             color_played
-            win_card
             is_winning
-            how_much_have_played
-            how_much_will_play
         """
         self.metadata = metadata
         features_list = []
@@ -41,7 +42,7 @@ class Features(object):
             features.append(self.how_much_have_played())
             features.append(self.how_much_will_play())
             features.append(self.win_card())
-
+            # Not implemented yet
             features.append(self.is_master())
             features.append(self.remaining_trumps())
             features.append(self.color_played())
@@ -76,6 +77,8 @@ class Features(object):
         """
         Return 1 if this card can win this trick
         """
+        return_statement = 0
+
         # If i'm the first, I've got a win card :)
         hmhp = self.how_much_have_played()
         if hmhp == 0:
@@ -86,6 +89,7 @@ class Features(object):
         # Test if the card is not in the right color, and not a trump
         if self.card['color'] != self.trick_color() and self.card['color'] != 4:
             return 0
+
         # If no-one have cut
         cards_on_table = self.metadata['table']['cards'][:hmhp]
         if 4 not in [card['color'] for card in cards_on_table]:
@@ -93,32 +97,28 @@ class Features(object):
             if self.card['number'] > \
             max([card['number'] for card in map(self.card_same_color, cards_on_table)]) \
             and self.card['color'] != 4:
-                return 1
-            else:
-                return 0
+                return_statement = 1
         else:
-            if self.card['color'] != 4:
-                return 0
-            else:
+            if self.card['color'] == 4:
                 # If I'm in the good color
                 if self.card['number'] > \
                 max([card['number'] for card in map(self.card_same_color, cards_on_table)]):
-                    return 1
-                else:
-                    return 0
+                    return_statement = 1
         # Impossible return
-        return 0
+        return return_statement
 
     def is_master(self):
         """
         Return 1 if the card is master
         """
+        # TODO : Create function
         return 0
 
     def remaining_trumps(self):
         """
         Return the number of remaining trumps
         """
+        # TODO : Create function
         return 0
 
     def color_played(self):
@@ -126,12 +126,14 @@ class Features(object):
         Return the number of card of the trick color which
         have been already played
         """
+        # TODO : Create function
         return 0
 
     def is_winning(self):
         """
         Return 1 if the player is winning
         """
+        # TODO : Create function
         return 0
 
     # TOOLS

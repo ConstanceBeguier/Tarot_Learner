@@ -9,8 +9,8 @@ from time import sleep
 # Related third party imports
 from tarot_ai import Dummy
 from requests import Session
-
-from pdb import set_trace as st
+# Debug
+# from pdb import set_trace as st
 
 URL = 'http://localhost:12345'
 DUMMY = Dummy()

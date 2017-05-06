@@ -6,14 +6,14 @@
 from random import choice
 # Related third party imports
 from features import Features
-
-from pdb import set_trace as st
+# Debug
+# from pdb import set_trace as st
 
 class Dummy(object):
     """ Dummy AI """
     def __init__(self):
         """ init"""
-        self.cls = choice      # random.choice function
+        self.cls = choice      # random.choice classifier
         self.feat = Features()
 
     def choose_card(self, metadata):
