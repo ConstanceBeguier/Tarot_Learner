@@ -23,7 +23,7 @@ func NewParty() Party {
 	allCards = random(allCards)
 	for i := 0; i < NB_PLAYERS; i++ {
 		cards := make(map[Card]bool)
-		for _, c := range allCards[NB_CARDS_PER_PLAYER*i : NB_CARDS_PER_PLAYER*(i+1)-1] {
+		for _, c := range allCards[NB_CARDS_PER_PLAYER*i : NB_CARDS_PER_PLAYER*(i+1)] {
 			cards[c] = true
 		}
 		player := Player{
