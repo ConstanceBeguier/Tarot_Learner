@@ -72,7 +72,7 @@ class Features(object):
         else:
             trick_color = self.metadata['table']['cards'][firstplayer_id]['color']
             if trick_color == 5:
-                return self.metadata['table']['cards'][firstplayer_id+1]['color']
+                return self.metadata['table']['cards'][(firstplayer_id+1)%3]['color']
             else:
                 return trick_color
 
