@@ -30,9 +30,9 @@ class Features(object):
             win_card
             is_taker
             diff_score
+            color_played
             remaining_trumps
             is_master
-            color_played
         """
         self.metadata = metadata
         features_list = []
@@ -47,10 +47,10 @@ class Features(object):
             features.append(self.win_card())
             features.append(self.is_taker())
             features.append(self.diff_score())
+            features.append(self.color_played())
             features.append(self.remaining_trumps())
             # Not implemented yet
             features.append(self.is_master())
-            features.append(self.color_played())
             features_list.append(features)
         return features_list
 
@@ -137,28 +137,30 @@ class Features(object):
         adv_score = self.metadata['table']['scores'][(self.is_taker()+1)%2]
         return score - adv_score
 
+    def color_played(self, color=None):
+        """
+        Return the number of card of the trick color which
+        have been already played
+        """
+        if color is None:
+            color = self.card['color']
+        # Remove old tricks's color
+        old_tricks = self.metadata['table']['HistoryCards'][:self.metadata['table']['trickNb']]
+        color_played = sum([sum([y['color'] == color for y in x]) for x in old_tricks])
+        # Remove current trick's trumps
+        color_played += sum([x['color'] == color and x['number'] != 0 \
+            for x in self.metadata['table']['cards']])
+        return color_played
+
     def remaining_trumps(self):
         """
         Return the number of remaining trumps
         """
-        # Remove old tricks's trumps
-        old_tricks = self.metadata['table']['HistoryCards'][:self.metadata['table']['trickNb']]
-        remaining_trumps = 21 - sum([sum([y['color'] == 4 for y in x]) for x in old_tricks])
-        # Remove current trick's trumps
-        remaining_trumps -= sum([x['color'] == 4 for x in self.metadata['table']['cards']])
-        return remaining_trumps
+        return 21 - self.color_played(color=4)
 
     def is_master(self):
         """
         Return 1 if the card is master
-        """
-        # TODO : Create function
-        return 0
-
-    def color_played(self):
-        """
-        Return the number of card of the trick color which
-        have been already played
         """
         # TODO : Create function
         return 0
