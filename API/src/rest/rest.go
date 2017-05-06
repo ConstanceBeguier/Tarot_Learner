@@ -118,6 +118,19 @@ func GetTableEndpoint(w http.ResponseWriter, req *http.Request) {
 }
 
 /**
+* @api {get} /table/valid_cards/:id Request valid cards in Hand.
+ * @apiName GetTableValidCardsEndpoint
+ * @apiGroup Table
+ *
+ * @apiSuccess {bool} it is your turn to play.
+ * @apiSuccess {[]Card} valid cards
+*/
+func GetTableValidCardsEndpoint(w http.ResponseWriter, req *http.Request) {
+	id, _ := strconv.Atoi(mux.Vars(req)["id"])
+	json.NewEncoder(w).Encode(party.ValidCards(id))
+}
+
+/**
  * @api {post} /table/:id/:color/:number Play a card.
  * @apiName PostTableEndpoint
  * @apiGroup Table
@@ -177,6 +190,7 @@ func main() {
 	router.HandleFunc("/newparty/available_seats", GetNewpartyAvailableseatsEndpoint).Methods("GET")
 	router.HandleFunc("/newparty/available_seats/{id}", PostNewpartyAvailableseatsEndpoint).Methods("POST")
 	router.HandleFunc("/table", GetTableEndpoint).Methods("GET")
+	router.HandleFunc("/table/valid_cards/{id}", GetTableValidCardsEndpoint).Methods("GET")
 	router.HandleFunc("/table/{id}/{color}/{number}", PostTableEndpoint).Methods("POST")
 	router.HandleFunc("/table/trick", GetTablePlayerTurnEndpoint).Methods("GET")
 	router.HandleFunc("/table/{trick}/{id}", GetTableTrickIdEndpoint).Methods("GET")

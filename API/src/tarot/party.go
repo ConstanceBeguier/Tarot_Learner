@@ -17,6 +17,11 @@ type Seats struct {
 	AvailableSeats [NB_PLAYERS]bool `json:"availableSeats"`
 }
 
+type ValidCardsJson struct {
+	IsYourTurn bool   `json:"yourTurn"`
+	ValidCards []Card `json:"valid_cards"`
+}
+
 func NewParty() Party {
 	var party Party
 	allCards := allCards()
@@ -57,4 +62,19 @@ func (p *Party) PlayCard(c Card, i int) bool {
 	p.Table.playCard(c, i)
 	p.Players[i].removeCard(c)
 	return true
+}
+
+func (p *Party) ValidCards(playerNb int) ValidCardsJson {
+	if playerNb != p.Table.PlayerTurn {
+		return ValidCardsJson{IsYourTurn: false, ValidCards: []Card{}}
+	}
+	var possibleCards []Card = make([]Card, 0)
+	for c, b := range p.Players[playerNb].CardsRemaining {
+		if b {
+			if p.Players[playerNb].validCard(c, p.Table) {
+				possibleCards = append(possibleCards, c)
+			}
+		}
+	}
+	return ValidCardsJson{IsYourTurn: true, ValidCards: possibleCards}
 }
