@@ -37,6 +37,8 @@ class Tarot(object):
         self.is_taker = int(seat_id == '0')
         self.player_ai = player_ai
         self.seat_id = seat_id
+        self.score = 0
+        self.adv_score = 0
         self.trick_id = 0
 
     def take_seat(self):
@@ -67,7 +69,11 @@ class Tarot(object):
         Display current score
         """
         if self.trick_id != 0:
-            print [loads(SESSION.get(URL + '/table').text)['scores'][self.is_taker]]
+            cur_score = int(loads(SESSION.get(URL + '/table').text)['scores'][self.is_taker])
+            adv_score = int(loads(SESSION.get(URL + '/table').text)['scores'][(self.is_taker+1)%2])
+            print ', %d]' % ((cur_score - self.score) - (adv_score - self.adv_score))
+            self.score = cur_score
+            self.adv_score = adv_score
 
     def play_card(self):
         """

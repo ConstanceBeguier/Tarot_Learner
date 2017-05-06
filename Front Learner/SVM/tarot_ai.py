@@ -30,5 +30,5 @@ class Dummy(object):
         """
         features_list = self.feat.extract_features(metadata)
         chosen_feature = self.cls(features_list)
-        stdout.write('%s,' % chosen_feature)
+        stdout.write('[%s' % chosen_feature)
         return {'color': chosen_feature[0], 'number': chosen_feature[1]}
