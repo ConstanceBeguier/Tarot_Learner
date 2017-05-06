@@ -14,6 +14,11 @@ type SucceedJson struct {
 	Succeed bool `json:"succeed"`
 }
 
+type NewPartyJson struct {
+	Succeed bool `json:"succeed"`
+	Seat    int  `json:"seat"`
+}
+
 type ReadyJson struct {
 	Ready bool `json:"ready"`
 }
@@ -47,8 +52,9 @@ func GetHandEndpoint(w http.ResponseWriter, req *http.Request) {
  */
 func GetNewpartyEndpoint(w http.ResponseWriter, req *http.Request) {
 	party = tarot.NewParty()
-	succeed := SucceedJson{Succeed: true}
-	json.NewEncoder(w).Encode(succeed)
+	party.Seats.AvailableSeats[0] = false
+	npJson := NewPartyJson{Succeed: true, Seat: 0}
+	json.NewEncoder(w).Encode(npJson)
 }
 
 /**
