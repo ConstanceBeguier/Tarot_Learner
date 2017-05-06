@@ -1,12 +1,14 @@
 package tarot
 
 type Table struct {
-	Scores      [2]float32       `json:"scores"`
-	Cards       [NB_PLAYERS]Card `json:"cards"`
-	PlayerTurn  int              `json:"playerTurn"`
-	FirstPlayer int              `json:"firstPlayer"`
-	TrickNb     int              `json:"trickNb"`
-	IsTaker     [NB_PLAYERS]int  `json:"isTaker"`
+	Scores             [2]float32       `json:"scores"`
+	Cards              [NB_PLAYERS]Card `json:"cards"`
+	PlayerTurn         int              `json:"playerTurn"`
+	FirstPlayer        int              `json:"firstPlayer"`
+	TrickNb            int              `json:"trickNb"`
+	IsTaker            [NB_PLAYERS]int  `json:"isTaker"`
+	HistoryCards       [NB_CARDS_PER_PLAYER][NB_PLAYERS]Card
+	HistoryFirstPlayer [NB_CARDS_PER_PLAYER]int
 }
 
 func (t *Table) checkPlayerTurn(i int) bool {
@@ -15,6 +17,8 @@ func (t *Table) checkPlayerTurn(i int) bool {
 
 func (t *Table) playCard(c Card, i int) {
 	t.Cards[i] = c
+	t.HistoryCards[t.TrickNb][i] = c
+	t.HistoryFirstPlayer[t.TrickNb] = t.FirstPlayer
 	t.PlayerTurn = (t.PlayerTurn + 1) % NB_PLAYERS
 	// Check end of turn
 	if t.PlayerTurn != t.FirstPlayer {

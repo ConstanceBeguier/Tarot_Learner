@@ -18,8 +18,8 @@ type Seats struct {
 }
 
 type ValidCardsJson struct {
-	IsYourTurn bool   `json:"yourTurn"`
-	ValidCards []Card `json:"valid_cards"`
+	IsYourTurn bool   `json:"isYourTurn"`
+	ValidCards []Card `json:"validCards"`
 }
 
 func NewParty() Party {

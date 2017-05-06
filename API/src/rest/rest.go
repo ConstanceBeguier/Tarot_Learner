@@ -27,6 +27,11 @@ type PlayerTurnJson struct {
 	PlayerTurn int `json:"playerTurn"`
 }
 
+type HistoryJson struct {
+	FirstPlayer int                          `json:"firstPlayer"`
+	Cards       [tarot.NB_PLAYERS]tarot.Card `json:"cards"`
+}
+
 var party tarot.Party
 
 /**
@@ -122,8 +127,8 @@ func GetTableEndpoint(w http.ResponseWriter, req *http.Request) {
  * @apiName GetTableValidCardsEndpoint
  * @apiGroup Table
  *
- * @apiSuccess {bool} it is your turn to play.
- * @apiSuccess {[]Card} valid cards
+ * @apiSuccess {Boolean} isYourTurn It is your turn to play.
+ * @apiSuccess {[]Card} validCards Return valid cards.
 */
 func GetTableValidCardsEndpoint(w http.ResponseWriter, req *http.Request) {
 	id, _ := strconv.Atoi(mux.Vars(req)["id"])
@@ -181,6 +186,29 @@ func GetTableTrickIdEndpoint(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode("{}")
 }
 
+/**
+ * @api {get} /table/history/:trickNb Get old trick.
+ * @apiName GetTableHistoryEndpoint
+ * @apiGroup Table
+ *
+ * @apiParam {Number} trickNb Trick number.
+ *
+ * @apiSuccess {Number} firstPlayer Trick first player.
+ * @apiSuccess {[3]Cards} cards Trick cards.
+ */
+func GetTableHistoryEndpoint(w http.ResponseWriter, req *http.Request) {
+	trickNb, _ := strconv.Atoi(mux.Vars(req)["trickNb"])
+	if trickNb >= 0 && trickNb < tarot.NB_CARDS_PER_PLAYER {
+		json.NewEncoder(w).Encode(
+			HistoryJson{
+				FirstPlayer: party.Table.HistoryFirstPlayer[trickNb],
+				Cards:       party.Table.HistoryCards[trickNb],
+			})
+	} else {
+		json.NewEncoder(w).Encode(HistoryJson{})
+	}
+}
+
 func main() {
 	party = tarot.NewParty()
 	router := mux.NewRouter()
@@ -194,5 +222,6 @@ func main() {
 	router.HandleFunc("/table/{id}/{color}/{number}", PostTableEndpoint).Methods("POST")
 	router.HandleFunc("/table/trick", GetTablePlayerTurnEndpoint).Methods("GET")
 	router.HandleFunc("/table/{trick}/{id}", GetTableTrickIdEndpoint).Methods("GET")
+	router.HandleFunc("/table/history/{trickNb}", GetTableHistoryEndpoint).Methods("GET")
 	log.Fatal(http.ListenAndServe(":12345", router))
 }
