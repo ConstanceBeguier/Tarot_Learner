@@ -9,7 +9,6 @@
 ## API
 
 ### Description
-https://github.com/apidoc/apidoc/tree/dev
 
 ### Requirements
 
@@ -21,6 +20,17 @@ apt-get install golang
 go get -u github.com/gorilla/mux
 
 go run rest.go
+```
+
+### API Doc
+
+```bash
+# To gen api doc, go inside rest.go dir
+# https://github.com/apidoc/apidoc/tree/dev
+apidoc -i API/src/rest/ -o API/docs/
+
+# Display doc
+google-chrome API/docs/index.html
 ```
 
 ## Front Learner
