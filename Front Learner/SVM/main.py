@@ -16,6 +16,12 @@ URL = 'http://localhost:12345'
 DUMMY = Dummy()
 SESSION = Session()
 
+def wait_for_players(timeout=1):
+    """ Wait until players are ready """
+    while not loads(SESSION.get(URL + '/newparty/status').text)['ready']:
+        print 'Not ready to start...'
+        sleep(timeout)
+
 class Tarot(object):
     """ Playing Tarot """
 
@@ -39,13 +45,7 @@ class Tarot(object):
             print 'Impossible to seat at the table !'
             exit(1)
 
-    def wait_for_players(self, timeout):
-        """ Wait until players are ready """
-        while not loads(SESSION.get(URL + '/newparty/status').text)['ready']:
-            print 'Not ready to start...'
-            sleep(timeout)
-
-    def wait_to_play(self, timeout):
+    def wait_to_play(self, timeout=1):
         """ Wait until it's player turn """
         while int(loads(SESSION.get(URL + '/table/trick').text)['playerTurn']) != self.seat_id:
             print 'Not ready to play...'
@@ -54,7 +54,9 @@ class Tarot(object):
     def play_card(self):
         """ Play a card using the AI """
         hand = loads(SESSION.get(URL + '/hand/' + str(self.seat_id)).text)['cards']
-        chosen_card = self.player_ai.choose_card(hand)
+        metadata = {}
+        metadata['cards'] = hand
+        chosen_card = self.player_ai.choose_card(metadata)
         print 'Player %s, Card %s' % (self.seat_id, chosen_card)
         while not loads(SESSION.post(URL + '/table/' + str(self.seat_id) + '/' \
             + str(chosen_card['color']) + '/' + str(chosen_card['number'])).text)['succeed']:
@@ -71,13 +73,13 @@ class Tarot(object):
 
         # Step 2 :
         # Get status of other players
-        self.wait_for_players(.01)
+        wait_for_players(timeout=.01)
 
         while self.trick_id < 23:
             print 'Start trick #%s' % self.trick_id
             # Step 3 :
             # Get status of the table
-            self.wait_to_play(.01)
+            self.wait_to_play(timeout=.01)
 
             # Step 4 :
             # Play a card
