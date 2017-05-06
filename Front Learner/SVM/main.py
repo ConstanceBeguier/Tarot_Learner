@@ -10,7 +10,7 @@ from time import sleep
 from tarot_ai import Dummy
 from requests import Session
 
-# from pdb import set_trace as st
+from pdb import set_trace as st
 
 URL = 'http://localhost:12345'
 DUMMY = Dummy()
@@ -53,9 +53,10 @@ class Tarot(object):
 
     def play_card(self):
         """ Play a card using the AI """
-        hand = loads(SESSION.get(URL + '/hand/' + str(self.seat_id)).text)['cards']
         metadata = {}
-        metadata['cards'] = hand
+        metadata['cards'] = loads(SESSION.get(URL + '/hand/' + str(self.seat_id)).text)['cards']
+        metadata['history'] = None
+        metadata['table'] = loads(SESSION.get(URL + '/table').text)
         chosen_card = self.player_ai.choose_card(metadata)
         print 'Player %s, Card %s' % (self.seat_id, chosen_card)
         while not loads(SESSION.post(URL + '/table/' + str(self.seat_id) + '/' \
@@ -88,6 +89,6 @@ class Tarot(object):
             # Step 5 :
             # Ready for another turn
             self.trick_id += 1
-
+            exit(1)
 if __name__ == '__main__':
     Tarot(DUMMY, argv[1]).play()
