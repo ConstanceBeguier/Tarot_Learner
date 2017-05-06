@@ -51,6 +51,9 @@ func (p *Party) PlayCard(c Card, i int) bool {
 	if !p.Players[i].hasCard(c) {
 		return false
 	}
+	if !p.Players[i].validCard(c, p.Table) {
+		return false
+	}
 	p.Table.playCard(c, i)
 	p.Players[i].removeCard(c)
 	return true
