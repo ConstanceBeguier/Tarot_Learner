@@ -23,8 +23,8 @@ class Features(object):
         Return a list of features for the classifier
             CARD (n times)
             trick_color
-            how_much_have_played
-            how_much_will_play
+            how_many_have_played
+            how_many_will_play
             win_card
             is_master
             remaining_trumps
@@ -39,8 +39,8 @@ class Features(object):
             features.append(card['color'])
             features.append(card['number'])
             features.append(self.trick_color())
-            features.append(self.how_much_have_played())
-            features.append(self.how_much_will_play())
+            features.append(self.how_many_have_played())
+            features.append(self.how_many_will_play())
             features.append(self.win_card())
             # Not implemented yet
             features.append(self.is_master())
@@ -56,7 +56,7 @@ class Features(object):
         Return the trick color.
         If no cards are on the table, this is the card color.
         """
-        hmhp = self.how_much_have_played()
+        hmhp = self.how_many_have_played()
         firstplayer_id = self.metadata['table']['firstPlayer']
         if hmhp == 0:
             return self.card['color']
@@ -73,17 +73,17 @@ class Features(object):
             else:
                 return trick_color
 
-    def how_much_have_played(self):
+    def how_many_have_played(self):
         """
         Return the number of player which have played
         """
         return (self.metadata['table']['playerTurn'] - self.metadata['table']['firstPlayer']) % 3
 
-    def how_much_will_play(self):
+    def how_many_will_play(self):
         """
         Return the number of player that will play
         """
-        return 3 - 1 - self.how_much_have_played()
+        return 3 - 1 - self.how_many_have_played()
 
     def win_card(self):
         """
@@ -92,7 +92,7 @@ class Features(object):
         return_statement = 0
 
         # If i'm the first, I've got a win card :)
-        hmhp = self.how_much_have_played()
+        hmhp = self.how_many_have_played()
         if hmhp == 0:
             return 1
         # The Excuse case
