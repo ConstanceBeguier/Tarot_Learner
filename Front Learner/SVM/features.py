@@ -9,8 +9,9 @@ class Features(object):
     """ Feature class """
     def __init__(self):
         """ init"""
-        self.metadata = None
         self.card = None
+        self.history = []
+        self.metadata = None
 
     def extract_features(self, metadata):
         """
@@ -34,6 +35,8 @@ class Features(object):
             remaining_trumps
             color_played
         """
+        self.update_history()
+
         self.metadata = metadata
         features_list = []
         for card in metadata['cards']:
@@ -127,8 +130,7 @@ class Features(object):
         """
         Return 1 if the player is taking
         """
-        # TODO : Remove 'isAttacker'
-        return self.metadata['table']['isAttacker'][self.metadata['seat_id']]
+        return self.metadata['table']['isTaker'][self.metadata['seat_id']]
 
     def diff_score(self):
         """
@@ -168,3 +170,9 @@ class Features(object):
         if card['color'] != self.card['color']:
             return {'color': 0, 'number': 0}
         return card
+
+    def update_history(self):
+        """
+        GET last trick history and store it
+        """
+        self.history += {}

@@ -55,7 +55,6 @@ class Tarot(object):
         """ Play a card using the AI """
         metadata = {}
         metadata['cards'] = loads(SESSION.get(URL + '/hand/' + str(self.seat_id)).text)['cards']
-        metadata['history'] = None
         metadata['seat_id'] = self.seat_id
         metadata['table'] = loads(SESSION.get(URL + '/table').text)
         chosen_card = self.player_ai.choose_card(metadata)
