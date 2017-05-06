@@ -2,6 +2,7 @@ package tarot
 
 import (
 	"fmt"
+	"sort"
 )
 
 type Player struct {
@@ -9,7 +10,12 @@ type Player struct {
 }
 
 type PlayerJson struct {
-	CardsRemaining []Card `json:"cards"`
+	Heart   []int `json:"heart_cards"`
+	Club    []int `json:"club_cards"`
+	Diamond []int `json:"diamond_cards"`
+	Spade   []int `json:"spade_cards"`
+	Trump   []int `json:"trump_cards"`
+	Excuse  []int `json:"excuse_cards"`
 }
 
 func (p *Player) hasCard(c Card) bool {
@@ -31,10 +37,35 @@ func (p *Player) removeCard(c Card) {
 
 func (p *Player) CardsToJson() PlayerJson {
 	var pl PlayerJson
+	pl.Heart = make([]int, 0)
+	pl.Club = make([]int, 0)
+	pl.Diamond = make([]int, 0)
+	pl.Spade = make([]int, 0)
+	pl.Trump = make([]int, 0)
+	pl.Excuse = make([]int, 0)
 	for c, b := range p.CardsRemaining {
 		if b {
-			pl.CardsRemaining = append(pl.CardsRemaining, c)
+			switch c.Color {
+			case HEART:
+				pl.Heart = append(pl.Heart, c.Number)
+			case CLUB:
+				pl.Club = append(pl.Club, c.Number)
+			case DIAMOND:
+				pl.Diamond = append(pl.Diamond, c.Number)
+			case SPADE:
+				pl.Spade = append(pl.Spade, c.Number)
+			case TRUMP:
+				pl.Trump = append(pl.Trump, c.Number)
+			case EXCUSE:
+				pl.Excuse = append(pl.Excuse, c.Number)
+			}
 		}
 	}
+	sort.Ints(pl.Heart)
+	sort.Ints(pl.Club)
+	sort.Ints(pl.Diamond)
+	sort.Ints(pl.Spade)
+	sort.Ints(pl.Trump)
+	sort.Ints(pl.Excuse)
 	return pl
 }
