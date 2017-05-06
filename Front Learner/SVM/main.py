@@ -89,6 +89,6 @@ class Tarot(object):
             # Step 5 :
             # Ready for another turn
             self.trick_id += 1
-            exit(1)
+
 if __name__ == '__main__':
     Tarot(DUMMY, argv[1]).play()
