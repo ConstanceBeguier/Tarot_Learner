@@ -50,6 +50,10 @@ func (p *Player) validCard(c Card, t Table) bool {
 		if c.Color != TRUMP {
 			return false
 		}
+		// has trumps and play a trump card
+		if !p.hasBiggerTrump(t) {
+			return true
+		}
 		for i := 0; i < NB_PLAYERS; i++ {
 			if t.Cards[i].Color == TRUMP && c.Number < t.Cards[i].Number {
 				return false
@@ -68,6 +72,9 @@ func (p *Player) validCard(c Card, t Table) bool {
 				if c.Color != TRUMP {
 					return false
 				}
+				if !p.hasBiggerTrump(t) {
+					return true
+				}
 				for i := 0; i < NB_PLAYERS; i++ {
 					if t.Cards[i].Color == TRUMP && c.Number < t.Cards[i].Number {
 						return false
@@ -77,6 +84,21 @@ func (p *Player) validCard(c Card, t Table) bool {
 			return true
 		}
 	}
+}
+
+func (p *Player) hasBiggerTrump(t Table) bool {
+	maxTrump := 0
+	for _, c := range t.Cards {
+		if c.Color == TRUMP && maxTrump < c.Number {
+			maxTrump = c.Number
+		}
+	}
+	for c, b := range p.CardsRemaining {
+		if b && c.Color == TRUMP && maxTrump < c.Number {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *Player) hasTrumps() bool {
