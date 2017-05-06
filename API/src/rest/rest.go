@@ -187,16 +187,16 @@ func GetTableTrickIdEndpoint(w http.ResponseWriter, req *http.Request) {
 }
 
 /**
- * @api {get} /table/history/:trickNb Get old trick.
- * @apiName GetTableHistoryEndpoint
- * @apiGroup Table
+ * @api {get} /history/:trickNb Get old trick.
+ * @apiName GetHistoryEndpoint
+ * @apiGroup History
  *
  * @apiParam {Number} trickNb Trick number.
  *
  * @apiSuccess {Number} firstPlayer Trick first player.
  * @apiSuccess {[3]Cards} cards Trick cards.
  */
-func GetTableHistoryEndpoint(w http.ResponseWriter, req *http.Request) {
+func GetHistoryEndpoint(w http.ResponseWriter, req *http.Request) {
 	trickNb, _ := strconv.Atoi(mux.Vars(req)["trickNb"])
 	if trickNb >= 0 && trickNb < tarot.NB_CARDS_PER_PLAYER {
 		json.NewEncoder(w).Encode(
@@ -222,6 +222,6 @@ func main() {
 	router.HandleFunc("/table/{id}/{color}/{number}", PostTableEndpoint).Methods("POST")
 	router.HandleFunc("/table/trick", GetTablePlayerTurnEndpoint).Methods("GET")
 	router.HandleFunc("/table/{trick}/{id}", GetTableTrickIdEndpoint).Methods("GET")
-	router.HandleFunc("/table/history/{trickNb}", GetTableHistoryEndpoint).Methods("GET")
+	router.HandleFunc("/history/{trickNb}", GetHistoryEndpoint).Methods("GET")
 	log.Fatal(http.ListenAndServe(":12345", router))
 }
