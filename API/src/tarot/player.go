@@ -36,10 +36,10 @@ func (p *Player) validCard(c Card, t Table) bool {
 	// Find color of this trick
 	colorTrick := t.Cards[t.FirstPlayer].Color
 	if colorTrick == EXCUSE {
-		if p.Id == t.FirstPlayer+1%NB_PLAYERS {
+		if p.Id == (t.FirstPlayer+1)%NB_PLAYERS {
 			return true
 		}
-		colorTrick = t.Cards[t.FirstPlayer+1%NB_PLAYERS].Color
+		colorTrick = t.Cards[(t.FirstPlayer+1)%NB_PLAYERS].Color
 	}
 	// Check the card played is valid
 	switch colorTrick {
