@@ -3,6 +3,7 @@
 """ Tarot AI """
 
 # Standard library imports
+from pickle import dump, load as p_load, HIGHEST_PROTOCOL
 from random import choice
 from sys import stdout
 # Related third party imports
@@ -13,10 +14,11 @@ from sklearn import svm
 # Debug
 # from pdb import set_trace as st
 
+CLS_DIRECTORY = 'cls'
 DATA_DIRECTORY = 'data'
 PICKLES_DIRECTORY = 'pickles'
-DATA_FILE = 'taker' # .txt
-
+DATA_FILE = 'taker.tiny' # .txt
+NEOPHYTE_CLS_PATH = 'cls/taker.0.671361401256.cls'
 
 ######################################
 ##             TOOLS                ##
@@ -49,6 +51,27 @@ def resize_scores(score):
     elif score > 0:
         score_resized = 1
     return score_resized
+
+def save_cls(cls, filename):
+    """
+    Save classifier in file
+    """
+    with open(filename, 'wb') as output:
+        dump(cls, output, HIGHEST_PROTOCOL)
+
+def load_cls(filename):
+    """
+    Load classifier from file
+    """
+    with open(filename, 'rb') as output:
+        cls = p_load(output)
+    return cls
+
+def get_indice(score):
+    """
+    Convert a score into an indice
+    """
+    return -4*score[:, 0] - score[:, 1] + score[:, 2] + 4*score[:, 3]
 
 ######################################
 ##            Dummy AI              ##
@@ -86,7 +109,7 @@ class Neophyte(object):
     """ Less dumb AI """
     def __init__(self):
         """ Init function"""
-        self.cls = choice # TODO : Change
+        self.cls = load_cls(NEOPHYTE_CLS_PATH)
         self.feat = Features()
         self.percent_training = 80
 
@@ -102,7 +125,8 @@ class Neophyte(object):
         Return the best card to play !
         """
         features_list = self.feat.compute_features(metadata)
-        chosen_feature = self.cls(features_list)
+        best_indice_index = get_indice(array(self.cls.predict_proba(features_list))).argmax()
+        chosen_feature = features_list[best_indice_index]
         stdout.write('[%s' % chosen_feature)
         return {'color': chosen_feature[0], 'number': chosen_feature[1]}
 
@@ -126,9 +150,9 @@ class Neophyte(object):
 
         # cls = sk.linear_model.LogisticRegression(C=0.01)
         cls = svm.SVC(C=0.01, probability=True)
-        # cls = sk.ensemble.RandomForestclassifier(n_estimators=200, max_features=None)
-        # cls = sk.ensemble.AdaBoostclassifier(n_estimators=200)
-        # cls = sk.ensemble.GradientBoostingclassifier(n_estimators=100, \
+        # cls = sk.ensemble.RandomForestClassifier(n_estimators=200, max_features=None)
+        # cls = sk.ensemble.AdaBoostClassifier(n_estimators=200)
+        # cls = sk.ensemble.GradientBoostingClassifier(n_estimators=100, \
         # learning_rate=0.9, max_depth=10, random_state=0)
         # cls = sk.ensemble.GradientBoostingRegressor(n_estimators=100, \
         # learning_rate=0.1, max_depth=1, random_state=0, loss='ls')
@@ -145,8 +169,7 @@ class Neophyte(object):
         """
         _, scores = self.compute_features(testing_sample)
         scores_proba = classifier.predict_proba(testing_sample[:, :-1])
-        scores_prediction = -4*scores_proba[:, 0] - scores_proba[:, 1] \
-                            + scores_proba[:, 2] + 4*scores_proba[:, 3]
+        scores_prediction = get_indice(scores_proba)
 
         return sum(abs(scores_prediction - scores))/len(scores)
 
@@ -160,8 +183,10 @@ class Neophyte(object):
         # preload_into_pickles()
         tricks_raw = read_from_pickles()
 
-        indice = []
-        nb_loop = 1
+        best_classifier = None
+        best_classifier_indice = 99
+        indice = 0
+        nb_loop = 5
         # It trains 'nb_loop' classifiers
         for i in range(nb_loop):
             shuffle(tricks_raw)
@@ -170,11 +195,16 @@ class Neophyte(object):
             testing_sample = tricks_raw[nb_training_tricks:]
 
             classifier = self.train(training_sample)
-            indice += [self.verify(classifier, testing_sample)]
-            print '%s/%s' % (i+1, nb_loop)
+            indice = self.verify(classifier, testing_sample)
+            print '%s/%s (%s)' % (i+1, nb_loop, indice)
 
-        print 'INDICE : %s' % indice
-        # print 'STD : %s' % std(proba)
+            if indice < best_classifier_indice:
+                best_classifier = classifier
+                best_classifier_indice = indice
+
+        save_cls(best_classifier, '%s/taker.%s.cls' % (CLS_DIRECTORY, best_classifier_indice))
+
+        print 'INDICE : %s' % best_classifier_indice
         # print classifier.feature_importances_
 
 if __name__ == '__main__':

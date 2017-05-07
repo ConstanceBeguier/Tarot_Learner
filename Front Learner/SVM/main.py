@@ -7,13 +7,14 @@ from json import loads
 from sys import argv
 from time import sleep
 # Related third party imports
-from tarot_ai import Dummy
+from tarot_ai import Neophyte
 from requests import Session
 # Debug
 # from pdb import set_trace as st
 
 URL = 'http://localhost:12345'
-DUMMY = Dummy()
+# AI = Dummy()
+AI = Neophyte()
 SESSION = Session()
 
 def wait_for_players(timeout=1):
@@ -121,4 +122,4 @@ class Tarot(object):
         self.display_score()
 
 if __name__ == '__main__':
-    Tarot(DUMMY, argv[1]).play()
+    Tarot(AI, argv[1]).play()
