@@ -1,4 +1,5 @@
 *.pyc
+*.npy
 *.swp
 API/src/rest/rest
 API/src/github.com

@@ -13,7 +13,7 @@ class Features(object):
         self.history = []
         self.metadata = None
 
-    def extract_features(self, metadata):
+    def compute_features(self, metadata):
         """
         Input:
         metadata['cards'] : Cards in hand
