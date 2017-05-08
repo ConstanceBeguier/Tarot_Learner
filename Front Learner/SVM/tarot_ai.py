@@ -149,7 +149,7 @@ class Neophyte(object):
         # Training
 
         # cls = sk.linear_model.LogisticRegression(C=0.01)
-        cls = svm.SVC(C=0.01, probability=True)
+        cls = svm.SVC(C=1, probability=True)
         # cls = sk.ensemble.RandomForestClassifier(n_estimators=200, max_features=None)
         # cls = sk.ensemble.AdaBoostClassifier(n_estimators=200)
         # cls = sk.ensemble.GradientBoostingClassifier(n_estimators=100, \
