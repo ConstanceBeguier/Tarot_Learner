@@ -10,7 +10,8 @@ from sys import stdout
 from features import Features
 from numpy import array, genfromtxt, load, save
 from numpy.random import shuffle
-from sklearn import svm
+# from sklearn import svm
+from sklearn import ensemble
 # Debug
 # from pdb import set_trace as st
 
@@ -18,7 +19,6 @@ CLS_DIRECTORY = 'cls'
 DATA_DIRECTORY = 'data'
 PICKLES_DIRECTORY = 'pickles'
 DATA_FILE = 'taker.tiny' # .txt
-NEOPHYTE_CLS_PATH = 'cls/taker.0.671361401256.cls'
 
 ######################################
 ##             TOOLS                ##
@@ -107,9 +107,12 @@ class Dummy(object):
 
 class Neophyte(object):
     """ Less dumb AI """
-    def __init__(self):
+    def __init__(self, cls_path=None):
         """ Init function"""
-        self.cls = load_cls(NEOPHYTE_CLS_PATH)
+        if cls_path is not None:
+            self.cls = load_cls(cls_path)
+        else:
+            self.cls = None
         self.feat = Features()
         self.percent_training = 80
 
@@ -149,16 +152,17 @@ class Neophyte(object):
         # Training
 
         # cls = sk.linear_model.LogisticRegression(C=0.01)
-        cls = svm.SVC(C=1, probability=True)
-        # cls = sk.ensemble.RandomForestClassifier(n_estimators=200, max_features=None)
+        # cls = svm.SVC(C=1, probability=True, verbose=True)
+        cls = ensemble.RandomForestClassifier(n_estimators=200, max_features=None, n_jobs=-1)
         # cls = sk.ensemble.AdaBoostClassifier(n_estimators=200)
         # cls = sk.ensemble.GradientBoostingClassifier(n_estimators=100, \
         # learning_rate=0.9, max_depth=10, random_state=0)
         # cls = sk.ensemble.GradientBoostingRegressor(n_estimators=100, \
         # learning_rate=0.1, max_depth=1, random_state=0, loss='ls')
         # cls = sk.neighbors.KNeighborsclassifier(n_neighbors=1)
-
+        print 'start cls.fit'
         cls.fit(features, scores)
+        print 'stop cls.fit'
 
         return cls
 
@@ -180,7 +184,7 @@ class Neophyte(object):
           - Training sample : 80%
           - Testing sample  : 20%
         """
-        # preload_into_pickles()
+        preload_into_pickles()
         tricks_raw = read_from_pickles()
 
         best_classifier = None
@@ -202,7 +206,8 @@ class Neophyte(object):
                 best_classifier = classifier
                 best_classifier_indice = indice
 
-        save_cls(best_classifier, '%s/taker.%s.cls' % (CLS_DIRECTORY, best_classifier_indice))
+        save_cls(best_classifier, '%s/%s.%s.cls' % \
+            (CLS_DIRECTORY, DATA_FILE, best_classifier_indice))
 
         print 'INDICE : %s' % best_classifier_indice
         # print classifier.feature_importances_

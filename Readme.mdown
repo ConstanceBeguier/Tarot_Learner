@@ -35,9 +35,19 @@ google-chrome API/docs/index.html
 
 ## Front Learner
 
-### Description
+### SVM
 
-### Go further with doInteraction()
+It takes 2 years with 144000 tricks
+
+### Random Forest
+
+Faster, but cannot load in RAM...
+
+### Q Learning
+
+#### Description
+
+#### Go further with doInteraction()
 
 ```
 Experiment Env (EE)
@@ -67,7 +77,7 @@ QL --getReward()--> ET (--reset--> EE)
 QL --giveReward --> QA
 ```
 
-### Add PyBrain repository
+#### Add PyBrain repository
 
 ```bash
 sudo pip install --upgrade pybrain

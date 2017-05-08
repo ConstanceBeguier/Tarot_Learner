@@ -13,8 +13,6 @@ from requests import Session
 # from pdb import set_trace as st
 
 URL = 'http://localhost:12345'
-# AI = Dummy()
-AI = Neophyte()
 SESSION = Session()
 
 def wait_for_players(timeout=1):
@@ -123,4 +121,10 @@ class Tarot(object):
         self.display_score()
 
 if __name__ == '__main__':
+    # Taker
+    if int(argv[1]) == 0:
+        AI = Neophyte(cls_path='cls/taker.50000.1.89749936323.cls')
+    # Defender
+    else:
+        AI = Neophyte(cls_path='cls/defender.50000.2.20639379341.cls')
     Tarot(AI, argv[1]).play()

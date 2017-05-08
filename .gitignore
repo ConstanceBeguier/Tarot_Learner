@@ -1,6 +1,7 @@
 *.pyc
 *.npy
 *.swp
+*.cls
 API/src/rest/rest
 API/src/github.com
 API/pkg
