@@ -105,6 +105,7 @@ class Tarot(object):
         wait_for_players(timeout=.02)
 
         while self.trick_id < 24:
+            print "Trick #%s" % self.trick_id
             # Step 3 :
             # Get status of the table
             self.wait_to_play(timeout=.003)

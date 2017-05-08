@@ -184,7 +184,7 @@ class Neophyte(object):
           - Training sample : 80%
           - Testing sample  : 20%
         """
-        preload_into_pickles()
+        # preload_into_pickles()
         tricks_raw = read_from_pickles()
 
         best_classifier = None
