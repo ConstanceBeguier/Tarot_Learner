@@ -10,7 +10,7 @@ from time import sleep
 # from tarot_ai import Neophyte
 from requests import Session
 # Debug
-from pdb import set_trace as st
+# from pdb import set_trace as st
 
 URL = 'http://localhost:12345'
 SESSION = Session()
@@ -156,6 +156,9 @@ class Tarot(object):
         # Step 2 :
         # Get status of other players
         wait_for_players()
+
+        print "%sThis is your Hand:%s" % (self.yellow, self.native)
+        self.display_cards(loads(SESSION.get(URL + '/hand/' + self.seat_id).text)['cards'])
 
         while self.trick_id < 24:
             print '%sTrick #%s%s' % (self.yellow, self.trick_id, self.native)
