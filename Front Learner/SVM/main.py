@@ -26,6 +26,7 @@ def wait_end(timeout=1):
     """
     This function loop while it's not the player turn.
     """
+    # TODO : https://github.com/ConstanceMorel/Tarot_Learner/issues/5
     while sum([x['color'] == 0 and x['number'] == 0 \
         for x in loads(SESSION.get(URL + '/history/23').text)['cards']]) != 0:
         sleep(timeout)
@@ -103,12 +104,12 @@ class Tarot(object):
 
         # Step 2 :
         # Get status of other players
-        wait_for_players(timeout=.01)
+        wait_for_players(timeout=.02)
 
         while self.trick_id < 24:
             # Step 3 :
             # Get status of the table
-            self.wait_to_play(timeout=.01)
+            self.wait_to_play(timeout=.003)
 
             # Step 4 :
             # Play a card
@@ -118,7 +119,7 @@ class Tarot(object):
             # Ready for another turn
             self.trick_id += 1
 
-        wait_end(timeout=.01)
+        wait_end(timeout=.02)
         self.display_score()
 
 if __name__ == '__main__':
