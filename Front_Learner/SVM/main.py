@@ -12,7 +12,11 @@ from requests import Session
 # Debug
 # from pdb import set_trace as st
 
-URL = 'http://localhost:12345'
+# TODO : Use argparse
+FQDN = 'localhost'
+if len(argv) == 3:
+    FQDN = argv[2]
+URL = 'http://%s:12345' % FQDN
 SESSION = Session()
 
 def wait_for_players(timeout=1):
